@@ -6,67 +6,28 @@
     <title>Sistema PAF - CREAS</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* TELA DE LOGIN - Sobrepõe o sistema até a autenticação */
-        #tela-login {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #f0f2f5;
+        /* Ajuste específico para garantir visibilidade das logos no cabeçalho */
+        .logo-area img {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+        .inst-header {
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 10000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            justify-content: space-between;
+            border-bottom: 2px solid #1e3a8a;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .login-box {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .inst-text {
+            flex: 1;
             text-align: center;
-            width: 350px;
-            border-top: 5px solid #1e3a8a;
+            padding: 0 20px;
         }
-        .login-box h2 { color: #1e3a8a; margin-bottom: 25px; font-size: 22px; }
-        .login-box input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        .login-box button {
-            width: 100%;
-            padding: 12px;
-            background: #1e3a8a;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .login-box button:hover { background: #162e70; }
-        #erroLogin { color: #dc2626; font-size: 14px; margin-top: 15px; display: none; }
-
-        /* Ajustes das Logos do seu Backup */
-        .logo-area img { height: 80px; width: auto; object-fit: contain; }
-        .inst-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; }
-        .inst-text { flex: 1; text-align: center; padding: 0 20px; }
     </style>
 </head>
 <body>
-
-<div id="tela-login">
-    <div class="login-box">
-        <img src="logo_creas.png" alt="Logo" style="width: 70px; margin-bottom: 15px;">
-        <h2>Acesso ao PAF</h2>
-        <input type="text" id="loginNome" placeholder="Seu Primeiro Nome (MAIÚSCULO)">
-        <input type="password" id="loginCPF" placeholder="5 primeiros dígitos do CPF" maxlength="5">
-        <button onclick="fazerLogin()">ENTRAR NO SISTEMA</button>
-        <p id="erroLogin">Nome ou CPF incorretos.</p>
-    </div>
-</div>
 
 <div class="container">
     <div style="background: #f1f5f9; padding: 20px; border-radius: 5px; margin-bottom: 25px; border: 1px solid #1e3a8a;" class="no-print">
@@ -81,7 +42,10 @@
     </div>
 
     <header class="inst-header">
-        <div class="logo-area"><img src="brasao.png" alt="Brasão Estado"></div>
+        <div class="logo-area">
+            <img src="brasao.png" alt="Brasão Estado">
+        </div>
+
         <div class="inst-text">
             <h2 style="font-size: 16px; margin: 0; color: #1e3a8a;">Secretaria de Estado de Desenvolvimento Social - SEDESE</h2>
             <h3 style="font-size: 14px; margin: 5px 0; font-weight: normal;">Subsecretaria de Assistência Social - SUBAS</h3>
@@ -90,7 +54,10 @@
                 CREAS Regional Alto Jequitinhonha - Diamantina/MG
             </div>
         </div>
-        <div class="logo-area"><img src="logo_creas.png" alt="Logo CREAS Regional"></div>
+
+        <div class="logo-area">
+            <img src="logo_creas.png" alt="Logo CREAS Regional">
+        </div>
     </header>
 
     <div class="paf-title-card">
@@ -255,6 +222,7 @@
         <button type="button" class="btn-save" onclick="validarESalvar()" style="background: #1e3a8a; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">💾 Salvar Alterações</button>
         <button type="button" class="btn-report" onclick="gerarRelatorio()" style="background: #f59e0b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📄 RELATÓRIO</button>
         <button type="button" class="btn-export" onclick="exportarDados()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📥 Exportar Backup</button>
+        
         <button type="button" class="btn-import" onclick="document.getElementById('fileInput').click()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📤 Carregar Backup</button>
         <input type="file" id="fileInput" onchange="importarDados(this)" style="display: none;">
     </div>
