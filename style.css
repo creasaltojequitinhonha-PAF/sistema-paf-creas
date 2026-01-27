@@ -1,204 +1,77 @@
-:root { 
-    --primary-blue: #1e3a8a; 
-    --border: #cbd5e1; 
-    --error-red: #ef4444;
-}
-
-body { 
-    background: #e2e8f0; 
-    font-family: sans-serif; 
-    padding: 20px; 
-    color: #1e293b; 
-}
-
-.container { 
-    max-width: 950px; 
-    margin: auto; 
-    background: white; 
-    padding: 30px; 
-    border-radius: 8px; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-}
-
-/* Cabeçalho e Logos */
-.inst-header { 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    border-bottom: 3px solid var(--primary-blue); 
-    padding-bottom: 15px; 
-    margin-bottom: 25px; 
-}
-
-.logo-area { 
-    width: 100px; 
-    height: 80px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-
-.logo-area img { 
-    max-width: 100%; 
-    max-height: 100%; 
-    object-fit: contain;
-}
-
-.inst-text { 
-    text-align: center; 
-    flex: 1; 
-}
-
-/* Ajuste para a nova Logo do CREAS no centro */
-.logo-creas-container {
+/* --- TELA DE LOGIN (ESTILO INTEGRADO) --- */
+#tela-login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #e2e8f0; /* Mesmo fundo do seu body */
     display: flex;
     justify-content: center;
-    margin-bottom: 5px;
+    align-items: center;
+    z-index: 10000;
 }
 
-.logo-creas-container img {
-    max-height: 60px;
-    width: auto;
-    object-fit: contain;
-}
-
-.inst-text h2 { font-size: 14px; margin: 0; color: var(--primary-blue); text-transform: uppercase; }
-.inst-text h3 { font-size: 13px; margin: 2px 0; font-weight: normal; }
-.inst-text h4 { font-size: 11px; margin: 0; color: #64748b; }
-
-.creas-badge { 
-    background: var(--primary-blue); 
-    color: white; 
-    padding: 3px 12px; 
-    border-radius: 15px; 
-    font-size: 11px; 
-    margin-top: 5px; 
-    display: inline-block; 
-}
-
-/* Título do PAF */
-.paf-title-card {
-    text-align: center;
-    background: #f8fafc;
-    padding: 15px;
+.login-box {
+    background: white;
+    padding: 35px;
     border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 340px;
+    border-top: 5px solid var(--primary-blue);
+    font-family: sans-serif;
+}
+
+.login-box img {
+    max-height: 60px;
+    margin-bottom: 20px;
+}
+
+.login-box h2 {
+    font-size: 16px;
+    color: var(--primary-blue);
     margin-bottom: 25px;
-    border: 1px solid var(--border);
-}
-.paf-title-card h1 { margin: 0; font-size: 17px; color: var(--primary-blue); }
-.paf-title-card p { margin: 5px 0 0; font-size: 12px; }
-
-/* Seções do Formulário */
-.section-header-blue { 
-    background: var(--primary-blue); 
-    color: white; 
-    padding: 8px 12px; 
-    font-weight: bold; 
-    font-size: 13px; 
-    border-radius: 4px 4px 0 0; 
-}
-
-.form-section { margin-bottom: 25px; }
-
-.grid-row { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 12px; 
-    margin-top: 10px; 
-}
-
-.span-2 { grid-column: span 2; }
-.span-3 { grid-column: span 3; }
-
-.input-group { display: flex; flex-direction: column; }
-.input-group label { 
-    font-size: 10px; 
-    font-weight: bold; 
-    margin-bottom: 3px; 
-    color: #475569; 
     text-transform: uppercase;
 }
 
-input, textarea { 
-    padding: 8px; 
-    border: 1px solid var(--border); 
-    border-radius: 4px; 
-    font-size: 13px; 
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    box-sizing: border-box; /* Garante que o padding não estoure a largura */
 }
 
-textarea { min-height: 70px; resize: vertical; }
-
-.required-label::after { content: " *"; color: #ef4444; }
-
-/* Erros de Validação */
-.input-error { 
-    border: 2px solid #ef4444 !important; 
-    background: #fef2f2; 
-}
-
-/* Tabelas */
-.table-container { 
-    border: 1px solid var(--border); 
-    border-radius: 4px; 
-    margin-top: 10px; 
-    overflow-x: auto;
-}
-
-table { width: 100%; border-collapse: collapse; }
-th { background: #f1f5f9; font-size: 11px; padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
-td { padding: 5px; border-bottom: 1px solid #eee; }
-table input { width: 90%; border: 1px solid grey; background: white; }
-table input:focus { border: 1px solid var(--border); background: white; }
-
-/* Renda */
-.renda-container { 
-    margin-top: 10px; 
-    padding: 15px; 
-    background: #f8fafc; 
-    border: 1px solid var(--border); 
-    border-radius: 4px; 
-}
-
-/* Botões de Ação */
-.footer-actions { 
-    display: flex; 
-    justify-content: center; 
-    gap: 10px; 
-    margin-top: 30px; 
-}
-
-.footer-actions button { 
-    padding: 12px 20px; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    font-size: 12px;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn-save { background: #2563eb; }
-.btn-export { background: #6366f1; }
-.btn-import { background: #8b5cf6; }
-.btn-print { background: #059669; }
-
-.btn-add {
-    background: #3b82f6;
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-blue);
     color: white;
     border: none;
-    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
-    font-size: 12px;
+    font-weight: bold;
+    font-size: 13px;
+    transition: opacity 0.2s;
 }
 
-/* Configuração de Impressão */
-@media print { 
-    .no-print { display: none !important; } 
-    body { background: white; padding: 0; }
-    .container { box-shadow: none; padding: 0; max-width: 100%; } 
+.login-box button:hover {
+    opacity: 0.9;
+}
+
+#erroLogin {
+    color: var(--error-red);
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 15px;
+    display: none;
+    text-transform: uppercase;
+}
+
+/* Garante que o portal não apareça durante o carregamento do login */
+body.logando .container {
+    display: none;
 }
