@@ -29,6 +29,22 @@
 </head>
 <body>
 
+    <div id="tela-login" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; z-index: 999999;">
+    <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center; width: 320px; font-family: sans-serif;">
+        
+        <img src="logo_creas.png" alt="Logo CREAS" style="width: 80px; height: auto; margin-bottom: 15px; object-fit: contain;">
+        
+        <h2 style="color: #1e3a8a; margin-bottom: 20px;">Acesso ao PAF</h2>
+        
+        <input type="text" id="loginNome" placeholder="NOME (MAIÚSCULO)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
+        <input type="password" id="loginCPF" placeholder="5 DÍGITOS DO CPF" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
+        
+        <button onclick="executarLoginRobusto()" style="width: 100%; padding: 12px; background: #1e3a8a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">ENTRAR</button>
+        
+        <p id="erroLogin" style="color: red; display: none; margin-top: 15px; font-size: 13px;">Acesso Negado</p>
+    </div>
+</div>
+
 <div class="container">
     <div style="background: #f1f5f9; padding: 20px; border-radius: 5px; margin-bottom: 25px; border: 1px solid #1e3a8a;" class="no-print">
         <label style="font-weight: bold; color: #1e3a8a; display: block; margin-bottom: 8px;">
