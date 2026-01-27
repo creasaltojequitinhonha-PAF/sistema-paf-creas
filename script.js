@@ -172,10 +172,7 @@ async function executarLoginRobusto() {
     const cpf = document.getElementById('loginCPF').value.trim();
     const erroMsg = document.getElementById('erroLogin');
 
-    if (nome === "ADMIN" && cpf === "123") {
-        liberarSistema();
-        return;
-    }
+   
 
     try {
         const doc = await db.collection("usuarios").doc(nome).get();
