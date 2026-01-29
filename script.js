@@ -13,6 +13,16 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
+// --- ATIVAÇÃO DE PERSISTÊNCIA OFFLINE (NOVO) ---
+firebase.firestore().enablePersistence()
+  .catch((err) => {
+      if (err.code == 'failed-precondition') {
+          console.log("Múltiplas abas abertas, persistência não ativada.");
+      } else if (err.code == 'unimplemented') {
+          console.log("O navegador não suporta persistência.");
+      }
+  });
+
 const db = firebase.firestore();
 const CHAVE_COLECAO = "pacientes_paf";
 let mapaPacientes = {};
