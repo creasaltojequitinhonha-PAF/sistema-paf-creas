@@ -114,6 +114,28 @@ function aplicarDados(data) {
     calcularRenda();
 }
 
+// A função PRECISA ter este nome exato para sumir o erro do seu print
+function importarDados(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+    const leitor = new FileReader();
+    leitor.onload = function(e) {
+        try {
+            const dados = JSON.parse(e.target.result);
+            
+            // Chama a função que distribui os dados nos campos
+            aplicarDados(dados);
+            
+            alert("✅ Backup carregado com sucesso!");
+        } catch (erro) {
+            alert("❌ Erro ao ler o arquivo JSON.");
+            console.error(erro);
+        }
+    };
+    leitor.readAsText(arquivo);
+}
+
 
 async function validarESalvar() {
     const dados = coletarDados();
