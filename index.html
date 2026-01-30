@@ -240,7 +240,7 @@
         <button type="button" class="btn-export" onclick="exportarDados()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📥 Exportar Backup</button>
         
         <button type="button" class="btn-import" onclick="document.getElementById('fileInput').click()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📤 Carregar Backup</button>
-        <input type="file" id="fileInput" onchange="importarDados(this)" style="display: none;">
+        <input type="file" id="fileInput" onchange="importarDados(event)" style="display: none;">
     </div>
 </div>
 
