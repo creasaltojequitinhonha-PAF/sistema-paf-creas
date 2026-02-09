@@ -176,18 +176,27 @@ async function listarPacientes() {
     const datalist = document.getElementById('lista-pacientes');
     if (!datalist) return;
     try {
-        const snapshot = await db.collection(CHAVE_COLECAO).get();
-        datalist.innerHTML = ''; mapaPacientes = {}; 
+        // MUDANÇA AQUI: Adicionamos { source: 'server' } para ignorar o cache e pegar TUDO da nuvem
+        const snapshot = await db.collection(CHAVE_COLECAO).get({ source: 'server' });
+        
+        datalist.innerHTML = ''; 
+        mapaPacientes = {}; 
+        
         snapshot.forEach(doc => {
             const p = doc.data();
-            const nome = p.inputs.resp_familiar || "Sem Nome";
-            const textoBusca = `${nome} - CPF: ${doc.id}`;
+            // Melhoria na busca do nome: verifica dentro de 'inputs' ou na raiz
+            const nome = (p.inputs && p.inputs.resp_familiar) ? p.inputs.resp_familiar : (p.resp_familiar || "Sem Nome");
+            
+            const textoBusca = `${nome.toUpperCase()} - CPF: ${doc.id}`;
             const option = document.createElement('option');
             option.value = textoBusca;
             datalist.appendChild(option);
             mapaPacientes[textoBusca] = doc.id;
         });
-    } catch (e) { console.error(e); }
+        console.log("Total de registros carregados do servidor:", snapshot.size);
+    } catch (e) { 
+        console.error("Erro ao listar pacientes:", e); 
+    }
 }
 
 function verificarSelecao(valor) {
@@ -437,7 +446,16 @@ function gerarRelatorio() {
 }
 
 window.onload = () => {
+    // 1. Configura o ID do CREAS
     const idC = document.getElementById('id_creas');
     if(idC) { idC.value = "31216097899"; }
+    
+    // 2. Carrega a lista do PAF (Banco de Dados)
     listarPacientes();
+
+    // 3. Inicia a verificação do RMA (Pulsar)
+    if (typeof verificarPendenciasRMA === "function") {
+        verificarPendenciasRMA();
+        setInterval(verificarPendenciasRMA, 60000);
+    }
 };
