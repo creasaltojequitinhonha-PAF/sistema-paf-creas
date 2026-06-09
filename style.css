@@ -4,8 +4,6 @@
     --error-red: #ef4444;
 }
 
-
-
 body { 
     background: #e2e8f0; 
     font-family: sans-serif; 
@@ -221,6 +219,64 @@ input, textarea {
 textarea { min-height: 70px; resize: vertical; }
 
 .required-label::after { content: " *"; color: #ef4444; }
+
+/* --- GRID DE DIAGNÓSTICOS (CHECKBOXES LADO A LADO) --- */
+.diagnosticos-grid {
+    display: grid;
+    /* Divide o espaço de forma flexível. Alinha de 3 a 5 itens por linha dependendo do monitor */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    padding: 15px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-top: none; /* Deixa integrado com o cabeçalho azul */
+    border-radius: 0 0 6px 6px;
+}
+
+/* Estilo para cada item individual de diagnóstico */
+.diagnostico-item {
+    display: flex;
+    align-items: flex-start; /* Mantém a caixinha no topo caso o texto quebre linha */
+    gap: 8px;
+    font-size: 12px;
+    color: #334155;
+    cursor: pointer;
+    line-height: 1.3;
+}
+
+.diagnostico-item input[type="checkbox"] {
+    margin-top: 2px; /* Alinhamento vertical fino com a primeira linha de texto */
+    cursor: pointer;
+}
+
+/* Área especial para a opção "Outras:" na base do grid */
+.diagnostico-outras {
+    grid-column: 1 / -1; /* Ocupa toda a largura do grid na última linha */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+}
+
+.diagnostico-outras .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #334155;
+    cursor: pointer;
+}
+
+.diagnostico-outras input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+}
 
 /* Erros de Validação */
 .input-error { 
