@@ -25,6 +25,50 @@
             text-align: center;
             padding: 0 20px;
         }
+        /* Estilização para o Grid de Diagnósticos (Múltiplas Opções) */
+        .diagnosticos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+        .diagnostico-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #334155;
+            line-height: 1.3;
+        }
+        .diagnostico-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+        .diagnostico-outras {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed #cbd5e1;
+        }
+        .diagnostico-outras input[type="text"] {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
@@ -134,8 +178,8 @@
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
                         <input type="radio" name="situacao_paf" id="status_concl"> Concluído em: 
-                        <input type="text" id="data_concl" placeholder="00/00/0000" maxlength="10" oninput="mascaraData(this)" style="width: 100px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px;">
                     </label>
+                    <input type="text" id="data_concl" placeholder="00/00/0000" maxlength="10" oninput="mascaraData(this)" style="width: 100px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px;">
                 </div>
             </div>
         </div>
@@ -184,9 +228,131 @@
     </section>
 
     <section class="form-section">
-        <div class="section-header-blue">I - Demandas e Violações</div>
-        <textarea id="texto_demandas" style="width: 100%; min-height: 120px; margin-top:10px;" required></textarea>
-    </section>
+        <div class="section-header-blue">I - Diagnósticos</div>
+        
+        <div class="diagnosticos-grid">
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Adolescente em MSE"> Adolescente em MSE
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Adolescente em cumprimento de LA ou PSC"> Adolescente em cumprimento de LA ou PSC
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Adolescente em cumprimento de medidas restritivas de liberdade"> Adolescente em cumprimento de medidas restritivas de liberdade
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Criança/adolescente em medida protetiva de acolhimento (abrigo)"> Criança/adolescente em medida protetiva de acolhimento (abrigo)
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Criança/adolescente responsável pelo cuidado de familiares"> Criança/adolescente responsável pelo cuidado de familiares
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de autonegligência"> Situação de autonegligência
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de discriminação em decorrência de orientação sexual / identidade de gênero"> Situação de discriminação em decorrência de orientação sexual / identidade de gênero
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de discriminação em decorrência da raça/ cor"> Situação de discriminação em decorrência da raça/ cor
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência física contra mulher"> Situação de violência física contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência psicológica contra mulher"> Situação de violência psicológica contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência moral contra mulher"> Situação de violência moral contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência sexual contra mulher"> Situação de violência sexual contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência patrimonial contra mulher"> Situação de violência patrimonial contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência institucional contra mulher"> Situação de violência institucional contra mulher
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência física contra criança ou adolescente"> Situação de violência física contra criança ou adolescente
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência psicológica contra criança ou adolescente"> Situação de violência psicológica contra criança ou adolescente
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência institucional contra criança ou adolescente"> Situação de violência institucional contra criança ou adolescente
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência sexual contra criança ou adolescente"> Situação de violência sexual contra criança ou adolescente
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência física contra idoso"> Situação de violência física contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência psicológica contra idoso"> Situação de violência psicológica contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência moral contra idoso"> Situação de violência moral contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência sexual contra idoso"> Situação de violência sexual contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência patrimonial contra idoso"> Situação de violência patrimonial contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de violência institutional contra idoso"> Situação de violência institucional contra idoso
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de negligência e abandono"> Situação de negligência e abandono
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de uso de substâncias psychoativas"> Situação de uso de substâncias psicoativas
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de uso abusivo de álcool"> Situação de uso abusivo de álcool
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de trabalho infantil"> Situação de trabalho infantil
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de confinamento"> Situação de confinamento
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de exploração sexual"> Situação de exploração sexual
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Tráfico de pessoas"> Tráfico de pessoas
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Trajetória de rua da criança/jovem"> Trajetória de rua da criança/jovem
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de desnutrição"> Situação de desnutrição
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de rua"> Situação de rua
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de tortura/ cárcere privado"> Situação de tortura/ cárcere privado
+            </label>
+            <label class="diagnostico-item">
+                <input type="checkbox" name="diagnosticos_paf" value="Situação de maus tratos"> Situação de maus tratos
+            </label>
+            
+            <div class="diagnostico-outras">
+                <label class="checkbox-item">
+                    <input type="checkbox" name="diagnosticos_paf" id="diag_check_outras" value="Outras"> Outras:
+                </label>
+                <input type="text" id="diag_texto_outras" placeholder="Descreva outras situações identificadas...">
+            </div>
+        </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+            <label for="texto_demandas">Outras Observações:</label>
+            <textarea id="texto_demandas" style="width: 100%; min-height: 120px; margin-top:10px;" required></textarea>
+        </div>
+</section>
 
     <section class="form-section">
         <div class="section-header-blue">II - Planejamento e Intervenção</div>
@@ -235,11 +401,11 @@
     </section>
 
     <div class="footer-actions no-print" style="display: flex; justify-content: center; gap: 15px; margin-top: 30px; padding: 20px; border-top: 1px solid #e2e8f0;">
-        <button type="button" class="btn-save" onclick="validarESalvar()" style="background: #1e3a8a; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">💾 Salvar Alterações</button>
-        <button type="button" class="btn-report" onclick="gerarRelatorio()" style="background: #f59e0b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📄 RELATÓRIO</button>
-        <button type="button" class="btn-export" onclick="exportarDados()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📥 Exportar Backup</button>
+        <button type="button" class="btn-save" onclick="validarESalvar()" style="background: #1e3a8a; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">Salvar Alterações</button>
+        <button type="button" class="btn-report" onclick="gerarRelatorio()" style="background: #494742; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;"> Gerar Relatório</button>
+        <button type="button" class="btn-export" onclick="exportarDados()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;"> Exportar Backup</button>
         
-        <button type="button" class="btn-import" onclick="document.getElementById('fileInput').click()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">📤 Carregar Backup</button>
+        <button type="button" class="btn-import" onclick="document.getElementById('fileInput').click()" style="background: #64748b; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">Carregar Backup</button>
         <input type="file" id="fileInput" onchange="importarDados(event)" style="display: none;">
     </div>
 </div>
