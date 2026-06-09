@@ -188,7 +188,7 @@ async function validarESalvar() {
     const cpf = dados.inputs.cpf;
     if (!cpf) { 
         Swal.fire({
-            title: 'Atenção',
+            title: 'Atenção!',
             text: 'Preencha o CPF para salvar.',
             icon: 'warning',
             confirmButtonColor: '#1e3a8a'
