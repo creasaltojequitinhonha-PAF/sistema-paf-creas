@@ -73,15 +73,31 @@ function calcularRenda() {
 // COLETA E APLICAÇÃO DE DADOS
 // ==========================================
 function coletarDados() {
-    const data = { inputs: {}, radios: {}, membros: [] };
+    const data = { inputs: {}, radios: {}, checkboxes: {}, membros: [] };
+    
+    // Coleta inputs tradicionais e textareas
     document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => {
         if (el.id && el.id !== 'renda_total' && el.id !== 'campo-pesquisa') {
             data.inputs[el.id] = el.value;
         }
     });
+    
+    // Coleta botões de rádio
     document.querySelectorAll('input[type="radio"]').forEach(el => {
         if (el.id) data.radios[el.id] = el.checked;
     });
+
+    // Coleta caixas de seleção (Checkboxes dos diagnósticos)
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        // Se tiver id, usa o id (como o diag_check_outras), se não, usa o valor/texto
+        if (el.id) {
+            data.checkboxes[el.id] = el.checked;
+        } else if (el.value) {
+            data.checkboxes[el.value] = el.checked;
+        }
+    });
+    
+    // Coleta a listagem da tabela de membros
     document.querySelectorAll('#membrosBody tr').forEach(tr => {
         data.membros.push({
             nome: tr.querySelector('.m-nome').value,
@@ -96,16 +112,38 @@ function coletarDados() {
 function aplicarDados(data) {
     if (!data) return;
     document.getElementById('membrosBody').innerHTML = '';
+    
+    // Restaura inputs de texto e textareas
     for (let id in data.inputs) { 
         const el = document.getElementById(id);
         if (el) el.value = data.inputs[id]; 
     }
+    
+    // Restaura os botões radio
     for (let id in data.radios) { 
         const el = document.getElementById(id);
         if (el) el.checked = data.radios[id]; 
     }
+
+    // Limpa todas as marcações de checkboxes atuais na tela antes de aplicar
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+
+    // Restaura as caixas de seleção salvas (Checkboxes dos diagnósticos)
+    if (data.checkboxes) {
+        for (let chave in data.checkboxes) {
+            // Tenta encontrar pelo ID primeiro (ex: diag_check_outras)
+            let el = document.getElementById(chave);
+            // Se não achar pelo ID, busca pelo atributo value correspondente ao diagnóstico
+            if (!el) {
+                el = document.querySelector(`input[type="checkbox"][value="${chave}"]`);
+            }
+            if (el) el.checked = data.checkboxes[chave];
+        }
+    }
+    
     const idC = document.getElementById('id_creas');
     if(idC) { idC.value = "31216097899"; idC.readOnly = true; }
+    
     if (data.membros && data.membros.length > 0) {
         data.membros.forEach(m => addMembro(m.nome, m.renda, m.data, m.parentesco));
     } else { 
@@ -114,7 +152,6 @@ function aplicarDados(data) {
     calcularRenda();
 }
 
-// A função PRECISA ter este nome exato para sumir o erro do seu print
 function importarDados(event) {
     const arquivo = event.target.files[0];
     if (!arquivo) return;
@@ -127,28 +164,55 @@ function importarDados(event) {
             // Chama a função que distribui os dados nos campos
             aplicarDados(dados);
             
-            alert("✅ Backup carregado com sucesso!");
+            Swal.fire({
+                title: 'Sucesso!',
+                text: 'Backup carregado com sucesso!',
+                icon: 'success',
+                confirmButtonColor: '#1e3a8a'
+            });
         } catch (erro) {
-            alert("❌ Erro ao ler o arquivo JSON.");
+            Swal.fire({
+                title: 'Erro!',
+                text: 'Erro ao ler o arquivo JSON.',
+                icon: 'error',
+                confirmButtonColor: '#1e3a8a'
+            });
             console.error(erro);
         }
     };
     leitor.readAsText(arquivo);
 }
 
-
 async function validarESalvar() {
     const dados = coletarDados();
     const cpf = dados.inputs.cpf;
-    if (!cpf) { alert("⚠️ Preencha o CPF para salvar."); return; }
+    if (!cpf) { 
+        Swal.fire({
+            title: 'Atenção',
+            text: 'Preencha o CPF para salvar.',
+            icon: 'warning',
+            confirmButtonColor: '#1e3a8a'
+        });
+        return; 
+    }
 
     try {
         await db.collection(CHAVE_COLECAO).doc(cpf).set(dados);
         exportarDados(); 
-        alert("✅ Salvo na Nuvem e Backup gerado!");
+        Swal.fire({
+            title: 'Salvo com Sucesso!',
+            text: 'PAF salvo!',
+            icon: 'success',
+            confirmButtonColor: '#1e3a8a'
+        });
         listarPacientes(); 
     } catch (error) {
-        alert("❌ Erro ao salvar na nuvem.");
+        Swal.fire({
+            title: 'Erro de Gravação',
+            text: 'Não foi possível salvar os dados na nuvem.',
+            icon: 'error',
+            confirmButtonColor: '#1e3a8a'
+        });
         console.error(error);
     }
 }
@@ -176,7 +240,6 @@ async function listarPacientes() {
     const datalist = document.getElementById('lista-pacientes');
     if (!datalist) return;
     try {
-        // MUDANÇA AQUI: Adicionamos { source: 'server' } para ignorar o cache e pegar TUDO da nuvem
         const snapshot = await db.collection(CHAVE_COLECAO).get({ source: 'server' });
         
         datalist.innerHTML = ''; 
@@ -184,7 +247,6 @@ async function listarPacientes() {
         
         snapshot.forEach(doc => {
             const p = doc.data();
-            // Melhoria na busca do nome: verifica dentro de 'inputs' ou na raiz
             const nome = (p.inputs && p.inputs.resp_familiar) ? p.inputs.resp_familiar : (p.resp_familiar || "Sem Nome");
             
             const textoBusca = `${nome.toUpperCase()} - CPF: ${doc.id}`;
@@ -213,8 +275,6 @@ async function executarLoginRobusto() {
     const cpf = document.getElementById('loginCPF').value.trim();
     const erroMsg = document.getElementById('erroLogin');
 
-   
-
     try {
         const doc = await db.collection("usuarios").doc(nome).get();
         if (doc.exists && doc.data().cpf.toString().startsWith(cpf)) {
@@ -224,23 +284,25 @@ async function executarLoginRobusto() {
             erroMsg.innerText = "Usuário ou CPF incorretos";
         }
     } catch (e) {
-        alert("Erro de conexão. Verifique o console (F12).");
+        Swal.fire({
+            title: 'Erro de Conexão',
+            text: 'Verifique o console (F12) para analisar os detalhes da conexão com o banco.',
+            icon: 'error',
+            confirmButtonColor: '#1e3a8a'
+        });
     }
 }
 
 function liberarSistema() {
-    // 1. Remove a tela de login
     const login = document.getElementById('tela-login');
     if (login) login.remove();
 
-    // 2. Localiza sua classe .container original e força a visibilidade
     const paf = document.querySelector('.container');
     if (paf) {
         paf.style.setProperty("display", "block", "important");
         paf.style.setProperty("visibility", "visible", "important");
         paf.style.setProperty("opacity", "1", "important");
         
-        // 3. Roda sua função original de carregar dados
         if (typeof listarPacientes === "function") {
             listarPacientes();
         }
@@ -249,12 +311,6 @@ function liberarSistema() {
     }
 }
 
-// ==========================================
-// GERAR RELATÓRIO ATUALIZADO
-// ==========================================
-// ==========================================
-// GERAR RELATÓRIO ATUALIZADO
-// ==========================================
 // ==========================================
 // GERAR RELATÓRIO COMPLETO E REORGANIZADO
 // ==========================================
@@ -270,6 +326,38 @@ function gerarRelatorio() {
             <td>${m.data}</td>
             <td>${m.parentesco}</td>
         </tr>`).join('');
+
+    // Filtra e prepara a exibição dinâmica dos diagnósticos marcados
+    let listagemDiagnosticosHtml = '';
+    let possuiDiagnostico = false;
+
+    if (d.checkboxes) {
+        let listaSelecionados = [];
+        for (let chave in d.checkboxes) {
+            // Ignora temporariamente o id do checkbox 'Outras' no loop padrão para tratá-lo separadamente abaixo
+            if (chave === 'diag_check_outras') continue;
+
+            if (d.checkboxes[chave] === true) {
+                possuiDiagnostico = true;
+                listaSelecionados.push(chave);
+            }
+        }
+
+        // VERIFICAÇÃO DO CAMPO "OUTRAS" DESTACADO NA IMAGEM
+        if (d.checkboxes['diag_check_outras'] === true) {
+            possuiDiagnostico = true;
+            const textoOutras = d.inputs.diag_texto_outras ? d.inputs.diag_texto_outras.trim() : '';
+            listaSelecionados.push(`<strong>OUTRAS:</strong> ${textoOutras || 'Marcado, mas sem descrição detalhada.'}`);
+        }
+
+        if (possuiDiagnostico) {
+            listagemDiagnosticosHtml = listaSelecionados.map(diag => `
+                <div class="diagnostico-tag">✓ ${diag}</div>
+            `).join('');
+        } else {
+            listagemDiagnosticosHtml = `<div style="grid-column: 1 / -1; color: #666; font-style: italic;">Nenhuma situação ou violação de direito foi marcada previamente para este prontuário.</div>`;
+        }
+    }
 
     const win = window.open('', '_blank');
     win.document.write(`
@@ -309,6 +397,26 @@ function gerarRelatorio() {
                 .full-row-box { border: 1px solid #ddd; padding: 5px; margin-top: 4px; border-radius: 3px; }
                 .content { font-size: 8.5px; white-space: pre-wrap; word-wrap: break-word; }
 
+                /* GRID DOS DIAGNÓSTICOS SELECIONADOS NO RELATÓRIO */
+                .diagnosticos-container-report {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px;
+                    background: #fdfdfd;
+                    border: 1px dashed #cbd5e1;
+                    padding: 8px;
+                    margin-top: 4px;
+                    border-radius: 3px;
+                }
+                .diagnostico-tag {
+                    font-size: 8.5px;
+                    color: #1e293b;
+                    padding: 2px 4px;
+                    background: #f1f5f9;
+                    border-left: 3px solid #10b981;
+                    border-radius: 2px;
+                }
+
                 /* ÁREA DE ASSINATURAS PARA ASSINATURA DIGITAL */
                 .assinaturas-container { 
                     margin-top: 30px; 
@@ -317,7 +425,7 @@ function gerarRelatorio() {
                 .assinaturas-grid { 
                     display: grid; 
                     grid-template-columns: 1fr 1fr; 
-                    gap: 30px 50px; /* Aumentado o espaço vertical entre as linhas para 30px */
+                    gap: 30px 50px; 
                     margin-top: 30px; 
                     text-align: center; 
                 }
@@ -372,6 +480,16 @@ function gerarRelatorio() {
             <div class="full-row-box">
                 <span class="label">Família beneficiária do BPC ou PBF (Observações):</span>
                 <div class="content">${d.inputs.obs_beneficios || '---'}</div>
+            </div>
+
+            <h2 class="section-title">I - DIAGNÓSTICOS </h2>
+            <div class="diagnosticos-container-report">
+                ${listagemDiagnosticosHtml}
+            </div>
+            
+            <div class="full-row-box" style="margin-top: 6px;">
+                <span class="label">Outras Observações:</span>
+                <div class="content">${d.inputs.texto_demandas || '---'}</div>
             </div>
 
             <h2 class="section-title">III - PLANEJAMENTO E INTERVENÇÃO</h2>
@@ -446,16 +564,24 @@ function gerarRelatorio() {
 }
 
 window.onload = () => {
+    // 0. Injeta as dependências do SweetAlert2 automaticamente
+    if (!document.getElementById('sweetalert-css')) {
+        const link = document.createElement('link');
+        link.id = 'sweetalert-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css';
+        document.head.appendChild(link);
+    }
+    if (!window.Swal) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+        document.head.appendChild(script);
+    }
+
     // 1. Configura o ID do CREAS
     const idC = document.getElementById('id_creas');
     if(idC) { idC.value = "31216097899"; }
     
     // 2. Carrega a lista do PAF (Banco de Dados)
     listarPacientes();
-
-    // 3. Inicia a verificação do RMA (Pulsar)
-    if (typeof verificarPendenciasRMA === "function") {
-        verificarPendenciasRMA();
-        setInterval(verificarPendenciasRMA, 60000);
-    }
 };
