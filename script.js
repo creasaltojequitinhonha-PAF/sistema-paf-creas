@@ -189,7 +189,7 @@ async function validarESalvar() {
     if (!cpf) { 
         Swal.fire({
             title: 'Atenção!',
-            text: 'Preencha o CPF para salvar.',
+            text: 'Preencha todos os dados para salvar.',
             icon: 'warning',
             confirmButtonColor: '#1e3a8a'
         });
