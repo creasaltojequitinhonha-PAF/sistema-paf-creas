@@ -38,6 +38,41 @@ function mascaraData(campo) {
     campo.value = v;
 }
 
+// Nova função para redefinir o formulário inteiro de forma nativa e limpa
+function limparFormularioCompleto() {
+    // 1. Limpa todos os inputs de texto, número, data e textareas
+    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => {
+        if (el.id !== 'renda_total' && el.id !== 'campo-pesquisa' && el.id !== 'id_creas') {
+            el.value = '';
+        }
+    });
+
+    // 2. Desmarca todos os radio buttons e checkboxes
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+        el.checked = false;
+    });
+
+    // 3. Reseta o ID do CREAS padrão
+    const idC = document.getElementById('id_creas');
+    if (idC) { 
+        idC.value = "31216097899"; 
+        idC.readOnly = true; 
+    }
+
+    // 4. Limpa a tabela de composição familiar e reinicia com apenas uma linha vazia padrão
+    const tableBody = document.getElementById('membrosBody');
+    if (tableBody) {
+        tableBody.innerHTML = '';
+        addMembro();
+    }
+    
+    // 5. Limpa a pesquisa
+    const campoPesquisa = document.getElementById('campo-pesquisa');
+    if (campoPesquisa) campoPesquisa.value = '';
+
+    calcularRenda();
+}
+
 // ==========================================
 // GESTÃO DE MEMBROS DA FAMÍLIA
 // ==========================================
@@ -204,6 +239,9 @@ async function validarESalvar() {
             text: 'PAF salvo!',
             icon: 'success',
             confirmButtonColor: '#1e3a8a'
+        }).then(() => {
+            // Limpa o formulário automaticamente após o fechamento da mensagem do modal de sucesso
+            limparFormularioCompleto();
         });
         listarPacientes(); 
     } catch (error) {
@@ -278,6 +316,8 @@ async function executarLoginRobusto() {
     try {
         const doc = await db.collection("usuarios").doc(nome).get();
         if (doc.exists && doc.data().cpf.toString().startsWith(cpf)) {
+            // Salva o login no localStorage para persistir ao dar F5
+            localStorage.setItem('login_creas_paf', 'conectado');
             liberarSistema();
         } else {
             erroMsg.style.display = 'block';
@@ -303,12 +343,29 @@ function liberarSistema() {
         paf.style.setProperty("visibility", "visible", "important");
         paf.style.setProperty("opacity", "1", "important");
         
+        // Cria um botão de logout discreto na interface caso ele não exista
+        if (!document.getElementById('btn-logout-sistema')) {
+            const btnLogout = document.createElement('button');
+            btnLogout.id = 'btn-logout-sistema';
+            btnLogout.innerText = ' SAIR';
+            btnLogout.style = 'position: fixed; top: 15px; right: 15px; z-index: 9999; background: #1e3a8a; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;';
+            btnLogout.className = 'no-print';
+            btnLogout.onclick = executarLogout;
+            document.body.appendChild(btnLogout);
+        }
+
         if (typeof listarPacientes === "function") {
             listarPacientes();
         }
     } else {
         console.error("Erro: Classe .container não encontrada.");
     }
+}
+
+// Nova função para encerrar a sessão e recarregar a tela pedindo login novamente
+function executarLogout() {
+    localStorage.removeItem('login_creas_paf');
+    window.location.reload();
 }
 
 // ==========================================
@@ -355,7 +412,7 @@ function gerarRelatorio() {
                 <div class="diagnostico-tag">✓ ${diag}</div>
             `).join('');
         } else {
-            listagemDiagnosticosHtml = `<div style="grid-column: 1 / -1; color: #666; font-style: italic;">Nenhuma situação ou violação de direito foi marcada previamente para este prontuário.</div>`;
+            listagemDiagnosticosHtml = `<div style="grid-column: 1 / -1; color: #666; font-style: italic;">--</div>`;
         }
     }
 
@@ -584,4 +641,10 @@ window.onload = () => {
     
     // 2. Carrega a lista do PAF (Banco de Dados)
     listarPacientes();
+
+    // 3. Checagem Automática do Status de Login no localStorage (NOVO)
+    const statusLogin = localStorage.getItem('login_creas_paf');
+    if (statusLogin === 'conectado') {
+        liberarSistema();
+    }
 };
