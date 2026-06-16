@@ -2,12 +2,13 @@
 // CONFIGURAÇÃO FIREBASE
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyBnHxMaz-JoMuFmz80kD9SDLAOYH0w_Sps",
+  apiKey: "AIzaSyBnHxMaz-JoMuFmz8OkD9SDLAoYH0w_Sps",
   authDomain: "sistema-creas-paf.firebaseapp.com",
   projectId: "sistema-creas-paf",
-  storageBucket: "sistema-creas-paf.appspot.com",
-  messagingSenderId: "57137105910",
-  appId: "1:57137105910:web:690ebff3cbad88e283527"
+  storageBucket: "sistema-creas-paf.firebasestorage.app",
+  messagingSenderId: "571371015910",
+  appId: "1:571371015910:web:690ebbff3cbad88e283527",
+  measurementId: "G-0LKN9HMEVG"
 };
 
 if (!firebase.apps.length) {
@@ -25,6 +26,7 @@ firebase.firestore().enablePersistence()
 
 const db = firebase.firestore();
 const CHAVE_COLECAO = "pacientes_paf";
+const auth = firebase.auth();
 let mapaPacientes = {};
 
 // ==========================================
@@ -309,27 +311,34 @@ async function carregarPaciente(cpf) {
 }
 
 async function executarLoginRobusto() {
-    const nome = document.getElementById('loginNome').value.toUpperCase().trim();
-    const cpf = document.getElementById('loginCPF').value.trim();
-    const erroMsg = document.getElementById('erroLogin');
+
+    const email =
+        document.getElementById("loginEmail")
+        .value
+        .trim();
+
+    const senha =
+        document.getElementById("loginSenha")
+        .value;
 
     try {
-        const doc = await db.collection("usuarios").doc(nome).get();
-        if (doc.exists && doc.data().cpf.toString().startsWith(cpf)) {
-            // Salva o login no localStorage para persistir ao dar F5
-            localStorage.setItem('login_creas_paf', 'conectado');
-            liberarSistema();
-        } else {
-            erroMsg.style.display = 'block';
-            erroMsg.innerText = "Usuário ou CPF incorretos";
-        }
-    } catch (e) {
+
+        await auth.signInWithEmailAndPassword(
+            email,
+            senha
+        );
+
+        liberarSistema();
+
+    } catch (error) {
+
         Swal.fire({
-            title: 'Erro de Conexão',
-            text: 'Verifique o console (F12) para analisar os detalhes da conexão com o banco.',
-            icon: 'error',
-            confirmButtonColor: '#1e3a8a'
+            icon: "error",
+            title: "Acesso Negado",
+            text: "E-mail ou senha incorretos."
         });
+
+        console.error(error);
     }
 }
 
@@ -363,8 +372,10 @@ function liberarSistema() {
 }
 
 // Nova função para encerrar a sessão e recarregar a tela pedindo login novamente
-function executarLogout() {
-    localStorage.removeItem('login_creas_paf');
+async function executarLogout() {
+
+    await auth.signOut();
+
     window.location.reload();
 }
 
@@ -621,7 +632,8 @@ function gerarRelatorio() {
 }
 
 window.onload = () => {
-    // 0. Injeta as dependências do SweetAlert2 automaticamente
+
+    // SweetAlert
     if (!document.getElementById('sweetalert-css')) {
         const link = document.createElement('link');
         link.id = 'sweetalert-css';
@@ -629,22 +641,34 @@ window.onload = () => {
         link.href = 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css';
         document.head.appendChild(link);
     }
+
     if (!window.Swal) {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
         document.head.appendChild(script);
     }
 
-    // 1. Configura o ID do CREAS
     const idC = document.getElementById('id_creas');
-    if(idC) { idC.value = "31216097899"; }
-    
-    // 2. Carrega a lista do PAF (Banco de Dados)
-    listarPacientes();
-
-    // 3. Checagem Automática do Status de Login no localStorage (NOVO)
-    const statusLogin = localStorage.getItem('login_creas_paf');
-    if (statusLogin === 'conectado') {
-        liberarSistema();
+    if(idC) {
+        idC.value = "31216097899";
     }
+
+    auth.onAuthStateChanged(user => {
+
+        if (user) {
+
+            liberarSistema();
+
+        } else {
+
+            const telaLogin =
+                document.getElementById('tela-login');
+
+            if (telaLogin) {
+                telaLogin.style.display = 'flex';
+            }
+        }
+
+    });
+
 };
