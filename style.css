@@ -18,24 +18,21 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #f0f2f5;
-    display: flex !important; /* Força o aparecimento */
+    display: flex !important;
     justify-content: center;
     align-items: center;
     z-index: 99999;
 }
 
-/* Garante que o container do sistema comece escondido */
-#conteudo-paf {
-    display: none; /* O sistema começa escondido pelo ID */
-}
 
-.container { 
-    max-width: 950px; 
-    margin: auto; 
-    background: white; 
-    padding: 30px; 
-    border-radius: 8px; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+
+.container {
+    max-width: 950px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .login-box {
@@ -97,18 +94,8 @@ body {
     text-transform: uppercase;
 }
 
-/* Garante que o portal não apareça durante o carregamento do login */
-body.logando .container {
-    display: none;
-}
-/* ADICIONE APENAS ESTA LINHA */
 
-.container { 
-    display: none; /* Adicione isso para o sistema começar oculto */
-    max-width: 950px; 
-    margin: auto; 
-    /* ... restante do seu código igual */
-}
+
 
 /* Cabeçalho e Logos */
 .inst-header { 
