@@ -4,6 +4,8 @@
     --error-red: #ef4444;
 }
 
+
+
 body { 
     background: #e2e8f0; 
     font-family: sans-serif; 
@@ -18,15 +20,14 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #f0f2f5;
-    display: flex !important;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 99999;
 }
 
-
-
 .container {
+    display: none;
     max-width: 950px;
     margin: auto;
     background: white;
