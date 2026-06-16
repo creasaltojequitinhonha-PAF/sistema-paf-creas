@@ -312,33 +312,58 @@ async function carregarPaciente(cpf) {
 
 async function executarLoginRobusto() {
 
-    const email =
-        document.getElementById("loginEmail")
-        .value
-        .trim();
+    const email = document.getElementById("loginEmail").value.trim();
+    const senha = document.getElementById("loginSenha").value;
 
-    const senha =
-        document.getElementById("loginSenha")
-        .value;
+    const erroLogin = document.getElementById("erroLogin");
+
+    erroLogin.style.display = "none";
+
+    if (!email || !senha) {
+        erroLogin.innerText = "Preencha o e-mail e a senha.";
+        erroLogin.style.display = "block";
+        return;
+    }
 
     try {
 
-        await auth.signInWithEmailAndPassword(
-            email,
-            senha
-        );
+        await auth.signInWithEmailAndPassword(email, senha);
 
-        liberarSistema();
+    } catch (erro) {
 
-    } catch (error) {
+        console.error("Erro de login:", erro);
 
-        Swal.fire({
-            icon: "error",
-            title: "Acesso Negado",
-            text: "E-mail ou senha incorretos."
-        });
+        let mensagem = "Falha ao realizar login.";
 
-        console.error(error);
+        switch (erro.code) {
+
+            case "auth/user-not-found":
+                mensagem = "Usuário não encontrado.";
+                break;
+
+            case "auth/wrong-password":
+                mensagem = "Senha incorreta.";
+                break;
+
+            case "auth/invalid-email":
+                mensagem = "E-mail ou senha incorretos.";
+                break;
+
+            case "auth/invalid-credential":
+                mensagem = "E-mail ou senha incorretos.";
+                break;
+
+            case "auth/too-many-requests":
+                mensagem = "Muitas tentativas. Aguarde alguns minutos.";
+                break;
+
+            case "auth/network-request-failed":
+                mensagem = "Sem conexão com a internet.";
+                break;
+        }
+
+        erroLogin.innerText = mensagem;
+        erroLogin.style.display = "block";
     }
 }
 
@@ -350,15 +375,12 @@ function liberarSistema() {
         login.style.display = 'none';
     }
 
-    const paf = document.querySelector('.container');
+    const paf = document.getElementById('conteudo-paf');
 
     if (paf) {
 
         paf.style.display = 'block';
-        paf.style.visibility = 'visible';
-        paf.style.opacity = '1';
 
-        // Cria botão de logout apenas uma vez
         if (!document.getElementById('btn-logout-sistema')) {
 
             const btnLogout = document.createElement('button');
@@ -387,15 +409,12 @@ function liberarSistema() {
             document.body.appendChild(btnLogout);
         }
 
-        if (typeof listarPacientes === "function") {
+        if (typeof listarPacientes === 'function') {
             listarPacientes();
         }
 
-    } else {
-
-        console.error("Erro: Classe .container não encontrada.");
-
     }
+
 }
 
 async function executarLogout() {
@@ -708,3 +727,16 @@ window.onload = () => {
     });
 
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("loginSenha")
+        .addEventListener("keypress", function(event) {
+
+            if (event.key === "Enter") {
+                executarLoginRobusto();
+            }
+
+        });
+
+});
