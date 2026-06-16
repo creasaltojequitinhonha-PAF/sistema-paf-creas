@@ -343,42 +343,78 @@ async function executarLoginRobusto() {
 }
 
 function liberarSistema() {
+
     const login = document.getElementById('tela-login');
-    if (login) login.remove();
+
+    if (login) {
+        login.style.display = 'none';
+    }
 
     const paf = document.querySelector('.container');
+
     if (paf) {
-        paf.style.setProperty("display", "block", "important");
-        paf.style.setProperty("visibility", "visible", "important");
-        paf.style.setProperty("opacity", "1", "important");
-        
-        // Cria um botão de logout discreto na interface caso ele não exista
+
+        paf.style.display = 'block';
+        paf.style.visibility = 'visible';
+        paf.style.opacity = '1';
+
+        // Cria botão de logout apenas uma vez
         if (!document.getElementById('btn-logout-sistema')) {
+
             const btnLogout = document.createElement('button');
+
             btnLogout.id = 'btn-logout-sistema';
-            btnLogout.innerText = ' SAIR';
-            btnLogout.style = 'position: fixed; top: 15px; right: 15px; z-index: 9999; background: #1e3a8a; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;';
+            btnLogout.innerText = 'SAIR';
             btnLogout.className = 'no-print';
+
+            btnLogout.style.cssText = `
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                z-index: 9999;
+                background: #1e3a8a;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 11px;
+            `;
+
             btnLogout.onclick = executarLogout;
+
             document.body.appendChild(btnLogout);
         }
 
         if (typeof listarPacientes === "function") {
             listarPacientes();
         }
+
     } else {
+
         console.error("Erro: Classe .container não encontrada.");
+
     }
 }
 
-// Nova função para encerrar a sessão e recarregar a tela pedindo login novamente
 async function executarLogout() {
 
-    await auth.signOut();
+    try {
 
-    window.location.reload();
+        await auth.signOut();
+
+        location.reload();
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao encerrar sessão:",
+            erro
+        );
+
+    }
 }
-
 // ==========================================
 // GERAR RELATÓRIO COMPLETO E REORGANIZADO
 // ==========================================
